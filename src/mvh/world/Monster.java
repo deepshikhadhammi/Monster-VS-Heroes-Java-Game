@@ -60,7 +60,33 @@ public final class Monster extends Entity {
 
     @Override
     public Direction chooseMove(World local) {
-        return null;
+        int row_center= local.getRows()/2;
+        int col_center=local.getColumns()/2;
+        for(int i=0;i< local.getRows();i++)
+        {
+            for(int j=0;j< local.getColumns();j++)
+            {
+                if(local.isHero(i,j))
+                {
+                    if((local.getEntity(i,j)).isAlive())
+                    {
+
+                        Direction[] array=Direction.getDirections(i-row_center,j-col_center);
+
+                        System.out.println(array[0]+"  "+array[1]+" "+array[2]);
+                        for (Direction direction : array) {
+                            System.out.println(direction);
+                            if (((local.canMoveOnTopOf(row_center, col_center, direction)))) {
+                                return direction;
+                            }
+                        }
+                        return Direction.getRandomDirection();
+                    }
+                }
+            }
+        }
+        return Direction.getDirection(1,-1);
+
     }
 
     @Override
