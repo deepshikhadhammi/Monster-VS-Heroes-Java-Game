@@ -304,6 +304,22 @@ public class World {
     }
 
     public String gameString() {
+        String str="",str1="";
+        worldString();
+        //  System.out.println(str1);
+        //System.out.print( "NAME"+"\t"+"S"+"\t"+"H"+"\t"+"STATE"+"\t"+"INFO"+"\n");
+        for(int i=0;i<getRows();i++)
+        {
+            for(int j=0;j<getColumns();j++)
+            {
+                if(world[i][j]!=null)
+                {
+                    str=str+(getEntity(i,j))+"\n";
+                }
+            }
+
+        }
+        return str;
     }
     public String worldString()
     {
