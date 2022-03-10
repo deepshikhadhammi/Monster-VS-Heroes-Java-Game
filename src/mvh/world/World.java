@@ -139,6 +139,28 @@ public class World {
         checkActive();
     }
 
+    private World getLocal(int attackWorldSize, int row, int column) {
+        World subview=new World(moveWorldSize,moveWorldSize);
+        int row_start=row-(moveWorldSize/2);
+        int col_start=column-(moveWorldSize/2);
+        for(int i=0,p=row_start;i<moveWorldSize;i++,p++)
+        {
+            for(int j=0,q=col_start;j<moveWorldSize;j++,q++)
+            {
+                if(p>=getRows()||q>=getColumns()||p<0||q<0)
+                {
+                    subview.addEntity(i,j,Wall.getWall());
+                }
+                else {
+
+                    subview.addEntity(i, j, world[p][q]);
+                }
+
+            }
+        }
+        return subview;
+    }
+
     /**
      * Check if simulation has now ended (only one of two versus Entity types is alive
      */
@@ -305,7 +327,7 @@ public class World {
 
     public String gameString() {
         String str="",str1="";
-        worldString();
+        str1=worldString();
         //  System.out.println(str1);
         //System.out.print( "NAME"+"\t"+"S"+"\t"+"H"+"\t"+"STATE"+"\t"+"INFO"+"\n");
         for(int i=0;i<getRows();i++)
@@ -319,7 +341,7 @@ public class World {
             }
 
         }
-        return str;
+        return str1+str;
     }
     public String worldString()
     {
