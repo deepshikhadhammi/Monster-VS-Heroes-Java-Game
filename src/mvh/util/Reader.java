@@ -32,9 +32,10 @@ public final class Reader {
                 }
             }
             World world1 = new World(row, column);
-            for (int p = 0; p < (row * column); p++) {
+            for (int p = 0,q=3; p < (row * column); p++,q++) {
                 line = buffered_reader.readLine();
-                String[] array = line.split(",");
+                String [] array;
+                array = line.split(",");
                 if (array.length > 2) {
                     if (array[2].equals("MONSTER")) {
                         int r = Integer.parseInt(array[0]);
@@ -45,7 +46,6 @@ public final class Reader {
                         Monster monster = new Monster(health, symbol, WeaponType.getWeaponType(weapon));
                         world1.addEntity(r, c, monster);
 
-
                     } else if (array[2].equals("HERO")) {
                         int r = Integer.parseInt(array[0]);
                         int c = Integer.parseInt(array[1]);
@@ -55,7 +55,6 @@ public final class Reader {
                         int arm_strength = Integer.parseInt(array[6]);
                         Hero hero = new Hero(health, symbol, weapon_strength, arm_strength);
                         world1.addEntity(r, c, hero);
-
                     }
                 }
             }
