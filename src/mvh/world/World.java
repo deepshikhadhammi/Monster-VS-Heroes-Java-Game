@@ -139,26 +139,38 @@ public class World {
         checkActive();
     }
 
-    private World getLocal(int attackWorldSize, int row, int column) {
-        World subview=new World(moveWorldSize,moveWorldSize);
-        int row_start=row-(moveWorldSize/2);
-        int col_start=column-(moveWorldSize/2);
-        for(int i=0,p=row_start;i<moveWorldSize;i++,p++)
+    /**
+     *
+     * @param attackWorldSize that contains the size of row X  column can be any odd integer
+     * @param row  that contains the row index of an entity to be placed on centre
+     * @param column that contains the column index of an entity to be placed on center
+     * @return  subview of entity
+     */
+    public World getLocal(int attackWorldSize, int row, int column) {
+        World subview=new World(attackWorldSize,attackWorldSize);
+        int row_start=row-(attackWorldSize/2);    //finding the starting location of row from where entities should be added from world to subview
+        int col_start=column-(attackWorldSize/2); //finding the starting location of column from where entities should be added from world to subview
+        for(int i=0,p=row_start;i<attackWorldSize;i++,p++)
         {
-            for(int j=0,q=col_start;j<moveWorldSize;j++,q++)
+            for(int j=0,q=col_start;j<attackWorldSize;j++,q++)
             {
-                if(p>=getRows()||q>=getColumns()||p<0||q<0)
+                if(p>=getRows()||q>=getColumns()||p<0||q<0)   // if there is no entity at a particular row and column index add wall to subview
                 {
                     subview.addEntity(i,j,Wall.getWall());
                 }
-                else {
+                else if(isHero(p,q))   //if Entity is a hero add it to subview
+                {
 
+                    subview.addEntity(i, j, world[p][q]);
+                }
+                else if(isMonster(p,q))   //if Entity is a monster add it to subview
+                {
                     subview.addEntity(i, j, world[p][q]);
                 }
 
             }
         }
-        return subview;
+        return subview;   //return the subview
     }
 
     /**
@@ -325,53 +337,55 @@ public class World {
         return gameString();
     }
 
-    public String gameString() {
-        String str="",str1="";
-        str1=worldString();
-        //  System.out.println(str1);
-        //System.out.print( "NAME"+"\t"+"S"+"\t"+"H"+"\t"+"STATE"+"\t"+"INFO"+"\n");
-        for(int i=0;i<getRows();i++)
-        {
-            for(int j=0;j<getColumns();j++)
-            {
-                if(world[i][j]!=null)
-                {
-                    str=str+(getEntity(i,j))+"\n";
-                }
-            }
+    /**creating a string that calls worldstring() and adds information about the entities
+     * @return string that is a combination of map and information about entities
+     */
 
+   public String gameString() {
+        String str="";                   //empty string
+        str=worldString();
+        str = str + "\nNAME\tS\tH\tSTATE\tINFO";    //Adding a header line to the string
+        for(Entity entity :entities) {             //looping through all the entities
+            str = str + "\n" + entity ;            //adding information about the entity to the string
         }
-        return str1+str;
+
+        return str;                   //return the string
     }
+
+    /** creating a map consisting of entities,walls and floors
+     * @return string that contains a map
+     */
+
     public String worldString()
     {
         String str = "";
         String str1 = "";
-        for (int k = 0; k <= getColumns() + 1; k++) {
+        for (int k = 0; k <= getColumns() + 1; k++) {     //loop to add walls before first and after last row
             str1 = str1 + Symbol.WALL.getSymbol();
         }
         str = str + str1 + "\n";
-        for (int i = 0; i < getRows(); i++) {
+        for (int i = 0; i < getRows(); i++) {             //looping through entities
             for (int j = 0; j < getColumns(); j++) {
-                if (j == 0) {
+                if (j == 0) {                              //adding a wall before the first column in every row
                     str = str + Symbol.WALL.getSymbol();
                 }
                 if (getEntity(i, j) == null) {
-                    str = str + Symbol.FLOOR.getSymbol();
-                } else if (getEntity(i, j) != null) {
-                    str = str + world[i][j].getSymbol();
+                    str = str + Symbol.FLOOR.getSymbol();   //if entity null add floor
+                } else if (getEntity(i, j) != null) {     //if entity is not null
+                    if(getEntity(i,j).isAlive())         //if entity alive
+                     str = str + world[i][j].getSymbol();    //Add symbol of entity
+                    else
+                        str=str+Symbol.DEAD.getSymbol();    //If entity dead add dead symbol
                 }
                 if ((j + 1) == getColumns()) {
-                    str = str + Symbol.WALL.getSymbol();
+                    str = str + Symbol.WALL.getSymbol();     //adding wall at the end of every column
                 }
             }
             str = str + "\n";
         }
         str = str + str1;
-        return str;
+        return str;              //return the string that contains worldstring() and information about entities
     }
-
-
     /**
      * The rows of the world
      * @return The rows of the world
