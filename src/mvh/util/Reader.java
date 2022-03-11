@@ -28,10 +28,11 @@ public final class Reader {
                 if (i == 0) {
                     row = Integer.parseInt(line);   //store the value of row
                 } else {
-                    column = Integer.parseInt(line);//store he value of column
+                    column = Integer.parseInt(line);//store the value of column
                 }
             }
             World world1 = new World(row, column);   //create a new world
+
             for (int p = 0,q=3; p < (row * column); p++,q++) {   //loop for(row*column lines)
                 line = buffered_reader.readLine();
                 String[] array;

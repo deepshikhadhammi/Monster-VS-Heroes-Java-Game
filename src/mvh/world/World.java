@@ -345,8 +345,11 @@ public class World {
         String str="";                   //empty string
         str=worldString();
         str = str + "\nNAME\tS\tH\tSTATE\tINFO";    //Adding a header line to the string
-        for(Entity entity :entities) {             //looping through all the entities
-            str = str + "\n" + entity ;            //adding information about the entity to the string
+        for(int i=0;i<getRows();i++) {             //looping through all the entities
+            for (int j = 0; j < getColumns(); j++) {
+                if(world[i][j]!=null)
+                 str = str + "\n" + world[i][j];            //adding information about the entity to the string
+            }
         }
 
         return str;                   //return the string
