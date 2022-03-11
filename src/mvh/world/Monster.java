@@ -58,61 +58,62 @@ public final class Monster extends Entity {
         return MONSTER_ARMOR_STRENGTH;
     }
 
+    /**
+     *
+     * @param local The local view of the entity
+     * @return Direction in which monster can move
+     */
     @Override
     public Direction chooseMove(World local) {
-        int row_center= local.getRows()/2;
-        int col_center=local.getColumns()/2;
-        for(int i=0;i< local.getRows();i++)
+        int row_center= 2 ;//finding the center of local where monster is placed
+        int col_center= 2 ;
+        for(int i=local.getRows()-1;i>=0;i--) //looping through all entities in local from bottom to top and right to left
         {
-            for(int j=0;j< local.getColumns();j++)
+            for(int j=local.getColumns()-1;j>=0;j--)
             {
-                if(local.isHero(i,j))
+                if(local.isHero(i,j) && local.getEntity(i,j).isAlive()) //if monster encounters an alive hero
                 {
-                    if((local.getEntity(i,j)).isAlive())
-                    {
-
+                       //find three drections
                         Direction[] array=Direction.getDirections(i-row_center,j-col_center);
 
-                        System.out.println(array[0]+"  "+array[1]+" "+array[2]);
-                        for (Direction direction : array) {
-                            System.out.println(direction);
-                            if (((local.canMoveOnTopOf(row_center, col_center, direction)))) {
-                                return direction;
-                            }
+                        for (int k = 0; k < 3; k++) {  //looping through all directions
+                            if(local.canMoveOnTopOf(row_center,col_center,array[k]))  //if monster can move on top of a location
+                                return array[k] ;  //return the location
                         }
-                        return Direction.getRandomDirection();
                     }
+
                 }
             }
-        }
-        return Direction.getDirection(1,-1);
+
+        return Direction.getDirection(1,1);   // return SOUTHEAST
 
     }
 
+    /**
+     *
+     * @param local The local view of the entity (immediate neighbors 3x3)
+     * @return the direction in which monster can attack
+     */
+
     @Override
     public Direction attackWhere(World local) {
-        int row_center= local.getRows()/2;
-        int col_center= local.getColumns()/2;
-        for(int i=local.getRows()-1;i>=0;i--)
+        int row_center= 1; //finding the center of local where monster is placed
+        int col_center= 1;
+        for(int i=local.getRows()-1;i>=0;i--)  //looping through all the entities in local
         {
-            for(int j= local.getColumns()-1;j>0;j--)
+            for(int j= local.getColumns()-1;j>=0;j--)
             {
-                if((local.isHero(i,j)))
+                if(local.isHero(i,j) && local.getEntity(i,j).isAlive()) //if monster finds a alive hero
                 {
-                    System.out.println("True");
-                    if((local.getEntity(i,j)).isAlive())
-                    {
-                        int row_change=i-row_center;
+                        int row_change=i-row_center;  //find the difference  of row and column index of hero and monster
                         int col_change=j-col_center;
-                        System.out.println(row_change+"  "+col_change);
-                        return Direction.getDirection(row_change,col_change);
-
-                    }
-                }
+                        if(local.canBeAttacked(row_center,col_center,Direction.getDirection(row_change,col_change)))//if monster can attack in the location
+                           return Direction.getDirection(row_change,col_change);  //return direction
+                        }
 
             }
         }
-        return null;
+        return null;  //return null if no direction found
 
     }
 
